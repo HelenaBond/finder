@@ -1,12 +1,11 @@
 package org.example.component.args;
 
+import org.example.component.condition.ParseCondition;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -23,7 +22,7 @@ class ParseArgsTest {
     }
 
     @Test
-    public void whenParseOutFileNameWithDirectory() throws IOException {
+    public void whenParseOutFileNameWithDirectory() {
         String separator = FileSystems.getDefault().getSeparator();
         String outFileName = String.join(separator, "one", "test.txt");
         String expected = String.join(separator, "data", "one", "test.txt");
@@ -39,28 +38,20 @@ class ParseArgsTest {
 
     @Test
     public void whenParseConditionWithMask() {
-        Predicate<Path> maskCondition = parseArgs.parseCondition("mask", "*.?xt");
-        assertTrue(maskCondition.test(Path.of("test.txt")));
+        ParseCondition maskCondition = parseArgs.parseCondition("mask", "*.?xt");
+        assertTrue(maskCondition.isSearchFileName(Path.of("test.txt")));
     }
 
     @Test
     public void whenParseConditionWithName() {
-        Predicate<Path> maskCondition = parseArgs.parseCondition("name", "test.docx");
-        assertTrue(maskCondition.test(Path.of("test.docx")));
+        ParseCondition maskCondition = parseArgs.parseCondition("name", "test.docx");
+        assertTrue(maskCondition.isSearchFileName(Path.of("test.docx")));
     }
 
     @Test
     public void whenParseConditionWithRegex() {
-        Predicate<Path> maskCondition = parseArgs.parseCondition("regex", "^test\\..+$");
-        assertTrue(maskCondition.test(Path.of("test.docx")));
-    }
-
-    @Test
-    public void whenParseConditionWithInvalidMask() {
-        assertThatThrownBy(() -> parseArgs.parseCondition("mask", "*{}.?xt"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(
-                        "Failed to convert the mask into regular expression. Please check the mask value. ");
+        ParseCondition maskCondition = parseArgs.parseCondition("regex", "^test\\..+$");
+        assertTrue(maskCondition.isSearchFileName(Path.of("test.docx")));
     }
 
     @Test

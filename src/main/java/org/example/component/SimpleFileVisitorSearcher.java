@@ -1,5 +1,7 @@
 package org.example.component;
 
+import org.example.component.condition.ParseCondition;
+
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
@@ -7,15 +9,14 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.function.Predicate;
 
 public class SimpleFileVisitorSearcher extends SimpleFileVisitor<Path> {
 
     private final Set<Path> allPaths = new LinkedHashSet<>();
-    private final Predicate<Path> predicate;
+    private final ParseCondition condition;
 
-    public SimpleFileVisitorSearcher(Predicate<Path> predicate) {
-        this.predicate = predicate;
+    public SimpleFileVisitorSearcher(ParseCondition condition) {
+        this.condition = condition;
     }
 
     public Set<Path> getAllPaths() {
@@ -24,7 +25,7 @@ public class SimpleFileVisitorSearcher extends SimpleFileVisitor<Path> {
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        if (predicate.test(file)) {
+        if (condition.isSearchFileName(file)) {
             allPaths.add(file);
         }
         return super.visitFile(file, attrs);

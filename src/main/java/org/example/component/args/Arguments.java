@@ -1,7 +1,8 @@
 package org.example.component.args;
 
-import java.nio.file.Path;
-import java.util.function.Predicate;
+import org.example.component.condition.ParseCondition;
 
-public record Arguments(Path dir, Predicate<Path> condition, Path outFileName) {
+import java.nio.file.Path;
+
+public record Arguments(Path dir, ParseCondition condition, Path outFileName) {
 }

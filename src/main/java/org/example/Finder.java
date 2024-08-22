@@ -2,11 +2,11 @@ package org.example;
 
 import org.example.component.args.Arguments;
 import org.example.component.args.ParseArgs;
+import org.example.component.condition.ParseCondition;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
-import java.util.function.Predicate;
 
 public class Finder {
 
@@ -20,7 +20,7 @@ public class Finder {
         SearchService searchService = new SearchService(parseArgs);
 
         Arguments arguments = searchService.valid(args);
-        Predicate<Path> condition = arguments.condition();
+        ParseCondition condition = arguments.condition();
         Set<Path> filteredFiles = searchService.search(arguments.dir(), condition);
         searchService.saveResults(filteredFiles, arguments.outFileName());
     }

@@ -1,13 +1,17 @@
 package org.example.component.condition;
 
-import org.example.component.TypeOfSearch;
-
 import java.nio.file.Path;
-import java.util.function.Predicate;
 
 public class ParseFileName implements ParseCondition {
+
+    private final String fileName;
+
+    public ParseFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     @Override
-    public Predicate<Path> parseSearchFileName(TypeOfSearch searchType, String file) {
-        return path -> path.toFile().getName().equals(file);
+    public boolean isSearchFileName(Path path) {
+        return path.toFile().getName().equals(fileName);
     }
 }

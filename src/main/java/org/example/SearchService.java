@@ -4,6 +4,7 @@ import org.example.component.SimpleFileVisitorSearcher;
 import org.example.component.args.ArgsName;
 import org.example.component.args.Arguments;
 import org.example.component.args.ParseArgs;
+import org.example.component.condition.ParseCondition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,6 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
-import java.util.function.Predicate;
 
 public class SearchService {
 
@@ -25,7 +25,7 @@ public class SearchService {
         this.parseArgs = parseArgs;
     }
 
-    public Arguments valid(String[] args) throws IOException {
+    public Arguments valid(String[] args) {
         ArgsName argsName = ArgsName.of(args);
         return new Arguments(
                 parseArgs.parseDir(argsName.get("d")),
@@ -33,7 +33,7 @@ public class SearchService {
                 parseArgs.parseOutFileName(argsName.get("o")));
     }
 
-    public Set<Path> search(Path root, Predicate<Path> condition) throws IOException {
+    public Set<Path> search(Path root, ParseCondition condition) throws IOException {
         SimpleFileVisitorSearcher searcher = new SimpleFileVisitorSearcher(condition);
         Files.walkFileTree(root, searcher);
         return searcher.getAllPaths();

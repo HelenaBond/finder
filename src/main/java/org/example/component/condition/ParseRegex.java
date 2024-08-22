@@ -1,15 +1,19 @@
 package org.example.component.condition;
 
-import org.example.component.TypeOfSearch;
-
 import java.nio.file.Path;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 public class ParseRegex implements ParseCondition {
+
+    private final String fileName;
+
+    public ParseRegex(String fileName) {
+        this.fileName = fileName;
+    }
+
     @Override
-    public Predicate<Path> parseSearchFileName(TypeOfSearch searchType, String file) {
-        Pattern pattern = Pattern.compile(file);
-        return path -> pattern.matcher(path.toFile().getName()).find();
+    public boolean isSearchFileName(Path path) {
+        Pattern pattern = Pattern.compile(fileName);
+        return pattern.matcher(path.toFile().getName()).find();
     }
 }

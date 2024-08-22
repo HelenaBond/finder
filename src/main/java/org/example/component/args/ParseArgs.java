@@ -2,12 +2,14 @@ package org.example.component.args;
 
 import org.example.component.TypeOfSearch;
 import org.example.component.condition.ParseCondition;
+import org.example.component.condition.ParseFileName;
+import org.example.component.condition.ParseMask;
+import org.example.component.condition.ParseRegex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.function.Predicate;
 
 import static org.example.component.HelpConstant.REQUIRED_EXTENSION;
 
@@ -41,9 +43,12 @@ public class ParseArgs {
         return Path.of(RESULT_FOLDER, outFileName);
     }
 
-    public Predicate<Path> parseCondition(String type, String file) {
+    public ParseCondition parseCondition(String type, String file) {
         TypeOfSearch searchType = TypeOfSearch.fromString(type);
-        ParseCondition condition = searchType.getParseCondition();
-        return condition.parseSearchFileName(searchType, file);
+        return switch (searchType) {
+            case FILE_NAME -> new ParseFileName(file);
+            case MASK -> new ParseMask(file);
+            case REGEX -> new ParseRegex(file);
+        };
     }
 }
