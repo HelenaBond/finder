@@ -27,6 +27,7 @@ public class SearchService {
 
     public Arguments valid(String[] args) {
         ArgsName argsName = ArgsName.of(args);
+        LOG.trace("User entered: {}", argsName);
         return new Arguments(
                 parseArgs.parseDir(argsName.get("d")),
                 parseArgs.parseCondition(argsName.get("t"), argsName.get("n")),
@@ -48,6 +49,7 @@ public class SearchService {
         }
         try (PrintStream stream = new PrintStream(new FileOutputStream(outDir.toFile()))) {
             filteredFiles.forEach(stream::println);
+            LOG.trace("Write result in file '{}'. It is {} fined files.", outDir, filteredFiles.size());
         } catch (IOException e) {
             LOG.error("Failed to write result.", e);
             filteredFiles.forEach(System.out::println);
