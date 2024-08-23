@@ -30,7 +30,7 @@ class ParseArgsTest {
     }
 
     @Test
-    public void whenParseOutFileNameWithoutDot() {
+    public void whenParseOutFileNameWithoutDotThenExceptionThrown() {
         assertThatThrownBy(() -> parseArgs.parseOutFileName("test"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("Indicate the file extension after the name, with a dot.");
@@ -55,7 +55,7 @@ class ParseArgsTest {
     }
 
     @Test
-    public void whenParseConditionWithInvalidTypeOfSearch() {
+    public void whenParseConditionWithInvalidTypeOfSearchThenExceptionThrown() {
         assertThatThrownBy(() -> parseArgs.parseCondition("test", "test.txt"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching(String.format(

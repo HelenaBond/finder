@@ -35,7 +35,7 @@ class FinderTest {
     }
 
     @Test
-    public void whenSimpleSearchInvalidMask(@TempDir Path temp) throws IOException {
+    public void whenSimpleSearchInvalidMaskThenExceptionThrown(@TempDir Path temp) throws IOException {
         Path path1 = Files.createDirectories(temp.resolve("one"));
         Path path2 = Files.createDirectories(temp.resolve("two"));
         Files.createFile(path1.resolve("test.txt"));
