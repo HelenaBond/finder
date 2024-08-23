@@ -29,7 +29,7 @@ public class ParseMask implements ParseCondition {
             String message = String.format(
                     "Failed to convert the mask into regular expression. Please check the mask value. %s",
                     e.getMessage());
-            LOG.error(message);
+            LOG.error(message, e);
             throw new IllegalArgumentException(message, e);
         }
     }
