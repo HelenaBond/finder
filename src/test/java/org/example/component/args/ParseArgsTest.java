@@ -1,11 +1,11 @@
 package org.example.component.args;
 
-import org.example.component.condition.ParseCondition;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -38,20 +38,20 @@ class ParseArgsTest {
 
     @Test
     public void whenParseConditionWithMask() {
-        ParseCondition maskCondition = parseArgs.parseCondition("mask", "*.?xt");
-        assertTrue(maskCondition.isSearchFileName(Path.of("test.txt")));
+        Predicate<Path> maskCondition = parseArgs.parseCondition("mask", "*.?xt");
+        assertTrue(maskCondition.test(Path.of("test.txt")));
     }
 
     @Test
     public void whenParseConditionWithName() {
-        ParseCondition maskCondition = parseArgs.parseCondition("name", "test.docx");
-        assertTrue(maskCondition.isSearchFileName(Path.of("test.docx")));
+        Predicate<Path> nameCondition = parseArgs.parseCondition("name", "test.docx");
+        assertTrue(nameCondition.test(Path.of("test.docx")));
     }
 
     @Test
     public void whenParseConditionWithRegex() {
-        ParseCondition maskCondition = parseArgs.parseCondition("regex", "^test\\..+$");
-        assertTrue(maskCondition.isSearchFileName(Path.of("test.docx")));
+        Predicate<Path> regexCondition = parseArgs.parseCondition("regex", "^test\\..+$");
+        assertTrue(regexCondition.test(Path.of("test.docx")));
     }
 
     @Test

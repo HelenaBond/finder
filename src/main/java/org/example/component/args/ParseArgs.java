@@ -1,15 +1,14 @@
 package org.example.component.args;
 
 import org.example.component.TypeOfSearch;
-import org.example.component.condition.ParseCondition;
-import org.example.component.condition.ParseFileName;
-import org.example.component.condition.ParseMask;
-import org.example.component.condition.ParseRegex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import static org.example.component.HelpConstant.REQUIRED_EXTENSION;
 
@@ -43,12 +42,28 @@ public class ParseArgs {
         return Path.of(RESULT_FOLDER, outFileName);
     }
 
-    public ParseCondition parseCondition(String type, String file) {
+    public Predicate<Path> parseCondition(String type, String fileName) {
         TypeOfSearch searchType = TypeOfSearch.fromString(type);
         return switch (searchType) {
-            case FILE_NAME -> new ParseFileName(file);
-            case MASK -> new ParseMask(file);
-            case REGEX -> new ParseRegex(file);
+            case MASK -> {
+                String string = fileName.replaceAll("[.]", "[.]");
+                string = string.replaceAll("[*]", ".*");
+                string = string.replaceAll("[?]", ".?");
+                try {
+                    Pattern pattern = Pattern.compile(string);
+                    LOG.info("The mask was converted to a regular expression once.");
+                    yield (path) -> pattern.matcher(path.toFile().getName()).find();
+                } catch (PatternSyntaxException e) {
+                    String message = "Failed to convert the mask into regular expression. Please check the mask value.";
+                    LOG.error(message, e);
+                    throw new IllegalArgumentException(message, e);
+                }
+            }
+            case REGEX -> {
+                Pattern pattern = Pattern.compile(fileName);
+                yield path -> pattern.matcher(path.toFile().getName()).find();
+            }
+            case FILE_NAME -> path -> fileName.equals(path.toFile().getName());
         };
     }
 }

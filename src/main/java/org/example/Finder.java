@@ -2,7 +2,6 @@ package org.example;
 
 import org.example.component.args.Arguments;
 import org.example.component.args.ParseArgs;
-import org.example.component.condition.ParseCondition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,8 +25,7 @@ public class Finder {
         SearchService searchService = new SearchService(parseArgs);
 
         Arguments arguments = searchService.valid(args);
-        ParseCondition condition = arguments.condition();
-        Set<Path> filteredFiles = searchService.search(arguments.dir(), condition);
+        Set<Path> filteredFiles = searchService.search(arguments.dir(), arguments.condition());
         searchService.saveResults(filteredFiles, arguments.outFileName());
     }
 }
