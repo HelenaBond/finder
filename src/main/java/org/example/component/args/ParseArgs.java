@@ -58,6 +58,7 @@ public class ParseArgs {
                     LOG.error(message, e);
                     throw new IllegalArgumentException(message, e);
                 }
+
             }
             case REGEX -> {
                 Pattern pattern = Pattern.compile(fileName);

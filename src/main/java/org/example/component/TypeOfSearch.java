@@ -20,14 +20,14 @@ public enum TypeOfSearch {
         this.text = text;
     }
 
-    public static TypeOfSearch fromString(String text) {
-        for (TypeOfSearch type : TypeOfSearch.values()) {
-            if (type.text.equalsIgnoreCase(text)) {
-                return type;
+    public static TypeOfSearch fromString(String type) {
+        for (TypeOfSearch searchType : TypeOfSearch.values()) {
+            if (searchType.text.equalsIgnoreCase(type)) {
+                return searchType;
             }
         }
             String message = String.format("'%s' not valid type of search. %s",
-                    text,
+                    type,
                     VALID_SEARCH_TYPE.getInstruction());
             LOG.error(message);
             throw new IllegalArgumentException(message);
