@@ -48,29 +48,5 @@ public class ParseArgs {
         String lob = "%s%s".formatted(searchType, fileName);
         PathMatcher pm = FileSystems.getDefault().getPathMatcher(lob);
         return p -> pm.matches(p.getFileName());
-
-//
-//        return switch (searchType) {
-//            case MASK -> {
-//                String string = fileName.replaceAll("[.]", "[.]");
-//                string = string.replaceAll("[*]", ".*");
-//                string = string.replaceAll("[?]", ".?");
-//                try {
-//                    Pattern pattern = Pattern.compile(string);
-//                    LOG.info("The mask was converted to a regular expression once.");
-//                    yield (path) -> pattern.matcher(path.toFile().getName()).find();
-//                } catch (PatternSyntaxException e) {
-//                    String message = "Failed to convert the mask into regular expression. Please check the mask value.";
-//                    LOG.error(message, e);
-//                    throw new IllegalArgumentException(message, e);
-//                }
-//
-//            }
-//            case REGEX -> {
-//                Pattern pattern = Pattern.compile(fileName);
-//                yield path -> pattern.matcher(path.toFile().getName()).find();
-//            }
-//            case FILE_NAME -> path -> fileName.equals(path.toFile().getName());
-//        };
     }
 }
