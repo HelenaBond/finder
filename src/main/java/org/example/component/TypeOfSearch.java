@@ -20,10 +20,10 @@ public enum TypeOfSearch {
         this.text = text;
     }
 
-    public static TypeOfSearch fromString(String type) {
+    public static String validSearchType(String type) {
         for (TypeOfSearch searchType : TypeOfSearch.values()) {
             if (searchType.text.equalsIgnoreCase(type)) {
-                return searchType;
+                return searchType.text;
             }
         }
             String message = String.format("'%s' not valid type of search. %s",

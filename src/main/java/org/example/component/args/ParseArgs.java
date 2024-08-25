@@ -4,11 +4,11 @@ import org.example.component.TypeOfSearch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import static org.example.component.HelpConstant.REQUIRED_EXTENSION;
 
@@ -43,28 +43,34 @@ public class ParseArgs {
     }
 
     public Predicate<Path> parseCondition(String type, String fileName) {
-        TypeOfSearch searchType = TypeOfSearch.fromString(type);
-        return switch (searchType) {
-            case MASK -> {
-                String string = fileName.replaceAll("[.]", "[.]");
-                string = string.replaceAll("[*]", ".*");
-                string = string.replaceAll("[?]", ".?");
-                try {
-                    Pattern pattern = Pattern.compile(string);
-                    LOG.info("The mask was converted to a regular expression once.");
-                    yield (path) -> pattern.matcher(path.toFile().getName()).find();
-                } catch (PatternSyntaxException e) {
-                    String message = "Failed to convert the mask into regular expression. Please check the mask value.";
-                    LOG.error(message, e);
-                    throw new IllegalArgumentException(message, e);
-                }
+        String validType = TypeOfSearch.validSearchType(type);
+        String searchType = "mask".equals(validType) ? "glob:" : "regex:";
+        String lob = "%s%s".formatted(searchType, fileName);
+        PathMatcher pm = FileSystems.getDefault().getPathMatcher(lob);
+        return p -> pm.matches(p.getFileName());
 
-            }
-            case REGEX -> {
-                Pattern pattern = Pattern.compile(fileName);
-                yield path -> pattern.matcher(path.toFile().getName()).find();
-            }
-            case FILE_NAME -> path -> fileName.equals(path.toFile().getName());
-        };
+//
+//        return switch (searchType) {
+//            case MASK -> {
+//                String string = fileName.replaceAll("[.]", "[.]");
+//                string = string.replaceAll("[*]", ".*");
+//                string = string.replaceAll("[?]", ".?");
+//                try {
+//                    Pattern pattern = Pattern.compile(string);
+//                    LOG.info("The mask was converted to a regular expression once.");
+//                    yield (path) -> pattern.matcher(path.toFile().getName()).find();
+//                } catch (PatternSyntaxException e) {
+//                    String message = "Failed to convert the mask into regular expression. Please check the mask value.";
+//                    LOG.error(message, e);
+//                    throw new IllegalArgumentException(message, e);
+//                }
+//
+//            }
+//            case REGEX -> {
+//                Pattern pattern = Pattern.compile(fileName);
+//                yield path -> pattern.matcher(path.toFile().getName()).find();
+//            }
+//            case FILE_NAME -> path -> fileName.equals(path.toFile().getName());
+//        };
     }
 }
