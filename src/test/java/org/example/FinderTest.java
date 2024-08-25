@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -31,7 +32,9 @@ class FinderTest {
         Path resultPath = resultDirectory.resolve("test.txt");
         assertThat(Files.readAllLines(resultPath)).hasSize(2);
         Files.delete(resultPath);
-        Files.delete(resultDirectory);
+        if ((Long) Files.getAttribute(resultDirectory, "size", NOFOLLOW_LINKS) == 0) {
+            Files.delete(resultDirectory);
+        }
     }
 
     @Test
@@ -44,6 +47,6 @@ class FinderTest {
                 finder.simpleSearch(new String[] {"-d=" + temp, " -t=mask",  "-n=(*.?xt", " -o=test.txt"}))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(
-                        "Failed to convert the mask into regular expression. Please check the mask value. ");
+                        "Failed to convert the mask into regular expression. Please check the mask value.");
     }
 }

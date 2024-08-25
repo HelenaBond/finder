@@ -7,9 +7,7 @@ import org.example.component.args.ParseArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
@@ -47,8 +45,8 @@ public class SearchService {
                 Files.createDirectories(dirParent);
             }
         }
-        try (PrintStream stream = new PrintStream(new FileOutputStream(outDir.toFile()))) {
-            filteredFiles.forEach(stream::println);
+        try (PrintWriter writer = new PrintWriter(new FileWriter(outDir.toFile()))) {
+            filteredFiles.forEach(writer::println);
             LOG.trace("Write result in file '{}'. It is {} fined files.", outDir, filteredFiles.size());
         } catch (IOException e) {
             LOG.error("Failed to write result.", e);
